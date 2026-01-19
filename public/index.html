@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>100 Days Generator</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      background: linear-gradient(135deg, #4285f4 0%, #34a853 50%, #fbbc05 100%);
+      font-family: system-ui, -apple-system, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+    }
+
+    h1 {
+      color: white;
+      font-size: 2.5rem;
+      margin-bottom: 8px;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+      text-align: center;
+    }
+
+    .subtitle {
+      color: rgba(255,255,255,0.95);
+      margin-bottom: 24px;
+      text-align: center;
+    }
+
+    .input-row {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    input[type="text"] {
+      padding: 14px 20px;
+      font-size: 1.1rem;
+      border-radius: 50px;
+      border: none;
+      width: 280px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+      outline: none;
+    }
+
+    button {
+      padding: 14px 28px;
+      font-size: 1.1rem;
+      border-radius: 50px;
+      border: none;
+      background: white;
+      color: #4285f4;
+      cursor: pointer;
+      font-weight: bold;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+      transition: transform 0.2s;
+    }
+
+    button:hover:not(:disabled) {
+      transform: scale(1.05);
+    }
+
+    button:disabled {
+      background: #ccc;
+      color: #666;
+      cursor: not-allowed;
+    }
+
+    .error {
+      background: rgba(255,255,255,0.95);
+      color: #c00;
+      padding: 16px 24px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      max-width: 500px;
+      text-align: center;
+    }
+
+    .loading {
+      background: rgba(255,255,255,0.95);
+      border-radius: 16px;
+      padding: 60px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+      text-align: center;
+    }
+
+    .loading .spinner {
+      font-size: 4rem;
+      animation: spin 2s linear infinite;
+    }
+
+    .loading p {
+      margin-top: 16px;
+      font-size: 1.1rem;
+      color: #333;
+    }
+
+    .loading .subtext {
+      color: #666;
+      font-size: 0.9rem;
+    }
+
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    .result {
+      background: white;
+      border-radius: 16px;
+      padding: 12px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+      max-width: 90%;
+      width: 700px;
+    }
+
+    .result img {
+      width: 100%;
+      border-radius: 8px;
+      display: block;
+    }
+
+    .result .actions {
+      display: flex;
+      justify-content: center;
+      margin-top: 12px;
+    }
+
+    .result .actions button {
+      padding: 10px 24px;
+      font-size: 1rem;
+      background: #f0f0f0;
+      color: #333;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+  </style>
+</head>
+<body>
+  <h1>🎉 100 Days Generator</h1>
+  <p class="subtitle">Powered by DALL-E 3 ✨</p>
+
+  <div class="input-row">
+    <input type="text" id="input" placeholder="duck, robot, avocado..." />
+    <button id="generateBtn" onclick="generate()">✨ Generate!</button>
+  </div>
+
+  <div id="error" class="error hidden"></div>
+
+  <div id="loading" class="loading hidden">
+    <div class="spinner">🌀</div>
+    <p>Creating a <span id="loadingThing">thing</span> holding a "100 days!" sign...</p>
+    <p class="subtext">This usually takes 10-30 seconds</p>
+  </div>
+
+  <div id="result" class="result hidden">
+    <img id="resultImage" src="" alt="Generated image" />
+    <div class="actions">
+      <button onclick="generate()">🔄 Regenerate</button>
+    </div>
+  </div>
+
+  <script>
+    const input = document.getElementById('input');
+    const generateBtn = document.getElementById('generateBtn');
+    const errorDiv = document.getElementById('error');
+    const loadingDiv = document.getElementById('loading');
+    const loadingThing = document.getElementById('loadingThing');
+    const resultDiv = document.getElementById('result');
+    const resultImage = document.getElementById('resultImage');
+
+    input.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') generate();
+    });
+
+    async function generate() {
+      const thing = input.value.trim();
+      if (!thing) return;
+
+      // Reset UI
+      errorDiv.classList.add('hidden');
+      resultDiv.classList.add('hidden');
+      loadingThing.textContent = thing;
+      loadingDiv.classList.remove('hidden');
+      generateBtn.disabled = true;
+      generateBtn.textContent = '🎨 Generating...';
+
+      try {
+        const response = await fetch('/generate', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ thing })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok || data.error) {
+          throw new Error(data.error || 'Something went wrong');
+        }
+
+        resultImage.src = data.imageUrl || data.image;
+        loadingDiv.classList.add('hidden');
+        resultDiv.classList.remove('hidden');
+
+      } catch (err) {
+        console.error(err);
+        errorDiv.textContent = '❌ ' + err.message;
+        errorDiv.classList.remove('hidden');
+        loadingDiv.classList.add('hidden');
+      } finally {
+        generateBtn.disabled = false;
+        generateBtn.textContent = '✨ Generate!';
+      }
+    }
+  </script>
+</body>
+</html>
