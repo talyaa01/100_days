@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
+<html lang="he" dir="rtl">
+  <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>100 Days Generator</title>
+  <title>יום המאה!</title>
   <style>
     * {
       box-sizing: border-box;
@@ -13,8 +13,7 @@
 
     body {
       min-height: 100vh;
-      background: linear-gradient(135deg, #4285f4 0%, #34a853 50%, #fbbc05 100%);
-      font-family: system-ui, -apple-system, sans-serif;
+      background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -149,26 +148,27 @@
   </style>
 </head>
 <body>
-  <h1>🎉 100 Days Generator</h1>
-  <p class="subtitle">Powered by DALL-E 3 ✨</p>
+  <h1>🚀 יום המאה! 💯</h1>
+  <p class="subtitle">אנא הקלידו שם של חיה או אובייקט כדי ליצור תמונה חדשה ✨</p>
 
   <div class="input-row">
-    <input type="text" id="input" placeholder="duck, robot, avocado..." />
-    <button id="generateBtn" onclick="generate()">✨ Generate!</button>
+    <input type="text" id="input" placeholder="ברווז, רובוט, אבוקדו..." />
+    <button id="generateBtn" onclick="generate()">✨ !צור</button>
   </div>
 
   <div id="error" class="error hidden"></div>
 
   <div id="loading" class="loading hidden">
     <div class="spinner">🌀</div>
-    <p>Creating a <span id="loadingThing">thing</span> holding a "100 days!" sign...</p>
+    <p>...יוצר תמונה של <span id="loadingThing">משהו</span></p>
+    <p class="subtext">זה לוקח בערך 10-30 שניות</p>
     <p class="subtext">This usually takes 10-30 seconds</p>
   </div>
 
   <div id="result" class="result hidden">
     <img id="resultImage" src="" alt="Generated image" />
     <div class="actions">
-      <button onclick="generate()">🔄 Regenerate</button>
+      <button onclick="generate()">🔄 צור שוב</button>
     </div>
   </div>
 
