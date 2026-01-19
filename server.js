@@ -14,7 +14,7 @@ app.post('/generate', async (req, res) => {
     return res.status(400).json({ error: 'Please provide a thing to generate' });
   }
 
-  const prompt = `A cute funny illustration of a single ${thing} character holding up a sign that says "100 days!" in bold text. The ${thing} looks excited and celebratory. Colorful, whimsical cartoon style, confetti in the background.`;
+  const prompt = `A cute funny illustration of a single ${thing} character floating in outer space, surrounded by stars, planets, and galaxies. The ${thing} is holding up a sign that says "יום המאה!" with the number 100 glowing brightly in the background. The ${thing} looks excited and celebratory, wearing a small astronaut helmet. Colorful cosmic background, whimsical cartoon style.`;
 
   try {
     const response = await fetch('https://api.openai.com/v1/images/generations', {
